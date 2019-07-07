@@ -11,11 +11,13 @@
 }
 
 body, html {
-    color: rgb(19, 221, 19);
+    color: rgb(255, 232, 31);
+    font-size: 1.5vw;
     height: 100%;
     margin: 0;
     overflow-x: hidden;
     overflow-y: hidden;
+    text-align: center;
 }
 
 .showStartBgImg {
@@ -50,22 +52,77 @@ body, html {
     transition-property: all;
 }
 
-.startLogoWrapperHide {
-    visibility: hidden;
-}
-
 #startLogoImg {
     display: block;
     margin: 0 auto;
     width: 33.333%;
 }
 
-#clickToStartTxt {
-    color: rgb(255, 232, 31);
-    font-size: 16pt;
-    text-align: center;
+.hidden {
+    display: none;
 }
 
+.playerBlur {
+    filter: blur(4px);
+    transition: 1000ms;
+}
+
+.playerSelect {
+    border: 6px solid rgb(255, 232, 31);
+    border-radius: 25px;
+    padding: 6px;
+    transition: 250ms;
+}
+
+.playerBorder {
+    border: 2px solid rgb(255, 232, 31);
+    border-radius: 25px;
+    padding: 10px;
+}
+
+#yodaWrapper, #leiaWrapper, #vaderWrapper, #lukeWrapper {
+    background: rgba(0, 0, 0, 0.5);
+
+    position: absolute;
+    top: -50%;
+    width: 10%;
+}
+
+#yodaWrapper {
+    left: 15%;
+}
+
+#leiaWrapper {
+    left: 35%;
+}
+
+#vaderWrapper {
+    left: 55%;
+}
+
+#lukeWrapper {
+    left: 75%;
+}
+
+#yodaIMG, #leiaIMG, #vaderIMG, #lukeIMG {
+    width: 100%;
+}
+
+#leiaIMG {
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 1%;
+}
+
+#vaderIMG {
+    padding-bottom: 5%;
+    padding-top: 6%
+}
+
+#lukeIMG {
+    padding-bottom: 4%;
+    padding-top: 4%;
+}
 
 
 
