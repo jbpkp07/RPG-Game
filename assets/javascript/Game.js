@@ -35,7 +35,11 @@ let yoda = {
     imgElement: "#yodaIMG",
     imgLeft: "./assets/images/yoda-left.png",
     imgRight: "./assets/images/yoda-right.png",
-    imgUsed: "./assets/images/yoda-left.png"
+    imgUsed: "./assets/images/yoda-left.png",
+
+    // reset: function() {
+     
+    // }
 };
 
 let leia = {
@@ -80,10 +84,35 @@ let luke = {
     imgUsed: "./assets/images/luke-left.png"
 };
 
+let background = {
+    imgStart: "url(./assets/images/match1.jpg)",
+    imgMatches: ["url(./assets/images/match1.jpg)", "url(./assets/images/match2.jpg)", "url(./assets/images/match3.jpg)"],
+    imgHistory: [],
+
+    getNewImg() {
+
+        if (this.imgHistory.length === 3) {
+
+            this.imgHistory = [];
+        }
+
+        let randomIndex;
+
+        do {
+            randomIndex = Math.floor(Math.random() * this.imgMatches.length);
+        }
+        while (this.imgHistory.includes(randomIndex));
+   
+        this.imgHistory.push(randomIndex);
+
+        return this.imgMatches[randomIndex];
+    }
+};
+
 
 //Functions--------------------------------------------------------------------
 function initialize() {
-
+   
     yoda.element = $("#yodaWrapper");
     leia.element = $("#leiaWrapper");
     vader.element = $("#vaderWrapper");
@@ -183,11 +212,11 @@ function selectPlayer() {
         delayMs += 333;
 
         player.element.click(() => {
-           
+
             if (areSelectListenersActive) {
-              
+
                 areSelectListenersActive = false;
-               
+
                 updateViewAllPlayers();
 
                 player.isHumanPlayer = true;
@@ -204,10 +233,8 @@ function selectPlayer() {
                     selectOpponentText.removeClass("hidden").hide(0).fadeIn(1000).promise().done(() => {
 
                         areSelectListenersActive = true;
-                        console.log("Your Player Selected : " + player.name);
-                        console.log(player);
                     });
-                });   
+                });
 
                 selectOpponent();
             }
@@ -223,11 +250,11 @@ function selectOpponent() {
         opponent.element.off("click");
 
         opponent.element.click(() => {
-           
+
             if (areSelectListenersActive) {
 
                 areSelectListenersActive = false;
-               
+
                 updateViewAllPlayers();
 
                 opponent.isActiveOpponent = true;
@@ -236,7 +263,7 @@ function selectOpponent() {
 
                     if (player === opponent) {
 
-                        setTimeout(() => { 
+                        setTimeout(() => {
 
                             player.element.fadeOut(1000).promise().done(() => {
 
@@ -246,12 +273,9 @@ function selectOpponent() {
                             selectOpponentText.fadeOut(1000).promise().done(() => {
 
                                 selectOpponentText.hide(0);
-            
-                                startMatch();
 
-                                console.log("Opponent Selected : " + opponent.name);
-                                console.log(opponent);
-                            });   
+                                beginMatches();
+                            });
 
                         }, 1000);
                     }
@@ -269,7 +293,35 @@ function selectOpponent() {
 }
 
 
+function beginMatches() {
+
+    let humanPlayer;
+    let activeOpponent;
+    let otherOpponents = [];
+
+    for (let player of players) {
+
+        if (player.isHumanPlayer) {
+
+            humanPlayer = player;
+        }
+        else if (player.isActiveOpponent) {
+
+            activeOpponent = player;
+        }
+        else {
+            otherOpponents.push(player);
+        }
+    }
+
+    
+
+}
+
+
 function startMatch() {
+
+    $("#bgImg").css("background-image", background.getNewImg());
 
 
 }
@@ -321,44 +373,84 @@ function assignSelectListeners() {
 
     for (let player of players) {
 
-        player.element.hover(
-            //Mouse in to
-            () => {
+        player.element.mousemove(() => {
 
-                if (areSelectListenersActive) {
+            if (areSelectListenersActive) {
 
-                    player.element.removeClass("playerBorder");
+                player.element.removeClass("playerBorder");
 
-                    player.element.addClass("playerSelect");
+                player.element.addClass("playerSelect");
 
-                    for (let otherPlayer of players) {
+                for (let otherPlayer of players) {
 
-                        if (otherPlayer !== player) {
+                    if (otherPlayer !== player) {
 
-                            otherPlayer.element.addClass("playerBlur");
-                        }
-                    }
-                }
-            },
-            //Mouse out of
-            () => {
-
-                if (areSelectListenersActive) {
-
-                    player.element.removeClass("playerSelect");
-
-                    player.element.addClass("playerBorder");
-
-                    for (let otherPlayer of players) {
-
-                        if (otherPlayer !== player) {
-
-                            otherPlayer.element.removeClass("playerBlur");
-                        }
+                        otherPlayer.element.addClass("playerBlur");
                     }
                 }
             }
-        );
+        });
+
+        player.element.mouseleave(() => {
+
+            if (areSelectListenersActive) {
+
+                player.element.removeClass("playerSelect");
+
+                player.element.addClass("playerBorder");
+
+                for (let otherPlayer of players) {
+
+                    if (otherPlayer !== player) {
+
+                        otherPlayer.element.removeClass("playerBlur");
+                    }
+                }
+            }
+        });
+
+
+
+        // player.element.hover(
+        //     //Mouse in to
+        //     () => {
+
+        //         if (areSelectListenersActive) {
+
+        //             player.element.removeClass("playerBorder");
+
+        //             player.element.addClass("playerSelect");
+
+        //             for (let otherPlayer of players) {
+
+        //                 if (otherPlayer !== player) {
+
+        //                     otherPlayer.element.addClass("playerBlur");
+        //                 }
+        //             }
+        //         }
+        //     },
+        //     //Mouse out of
+        //     () => {
+
+        //         if (areSelectListenersActive) {
+
+        //             player.element.removeClass("playerSelect");
+
+        //             player.element.addClass("playerBorder");
+
+        //             for (let otherPlayer of players) {
+
+        //                 if (otherPlayer !== player) {
+
+        //                     otherPlayer.element.removeClass("playerBlur");
+        //                 }
+        //             }
+        //         }
+        //     }
+        // );
+
+
     }
 }
 
