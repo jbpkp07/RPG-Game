@@ -58,6 +58,15 @@ body, html {
     width: 33.333%;
 }
 
+#selectPlayer, #selectOpponent {
+    background: rgba(0, 0, 0, 0.5);
+    font-size: 2.0vw;
+    left: 40%;
+    position: absolute;
+    top: 20%;
+    width: 20%;
+}
+
 .hidden {
     display: none;
 }
@@ -82,7 +91,6 @@ body, html {
 
 #yodaWrapper, #leiaWrapper, #vaderWrapper, #lukeWrapper {
     background: rgba(0, 0, 0, 0.5);
-
     position: absolute;
     top: -50%;
     width: 10%;
