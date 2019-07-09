@@ -12,16 +12,20 @@
 
 
 //Global Variables-------------------------------------------------------------
+let bgImg;
 let startBtn;
 let selectPlayerText;
 let selectOpponentText;
 let attackBtn;
+let opponentDefeated;
 
 let humanPlayer;
 let activeOpponent;
 let players = [];
 
 let intervalID;
+
+let attackPowerGain;
 
 let areSelectListenersActive = false;
 
@@ -40,10 +44,13 @@ let yoda = {
     imgRight: "./assets/images/yoda-right.png",
     imgUsed: "./assets/images/yoda-left.png",
 
-    initialize: function() {
+    initialize: function () {
 
-        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100; 
-        this.attackPower  = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100;
+        this.attackPower = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+        this.isDefeated = false;
+        this.isHumanPlayer = false;
+        this.isActiveOpponent = false;
     }
 };
 
@@ -60,10 +67,13 @@ let leia = {
     imgRight: "./assets/images/leia-right.png",
     imgUsed: "./assets/images/leia-left.png",
 
-    initialize: function() {
+    initialize: function () {
 
-        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100; 
-        this.attackPower  = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100;
+        this.attackPower = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+        this.isDefeated = false;
+        this.isHumanPlayer = false;
+        this.isActiveOpponent = false;
     }
 };
 
@@ -80,10 +90,13 @@ let vader = {
     imgRight: "./assets/images/vader-right.png",
     imgUsed: "./assets/images/vader-left.png",
 
-    initialize: function() {
+    initialize: function () {
 
-        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100; 
-        this.attackPower  = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100;
+        this.attackPower = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+        this.isDefeated = false;
+        this.isHumanPlayer = false;
+        this.isActiveOpponent = false;
     }
 };
 
@@ -100,15 +113,18 @@ let luke = {
     imgRight: "./assets/images/luke-right.png",
     imgUsed: "./assets/images/luke-left.png",
 
-    initialize: function() {
+    initialize: function () {
 
-        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100; 
-        this.attackPower  = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100;
+        this.attackPower = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+        this.isDefeated = false;
+        this.isHumanPlayer = false;
+        this.isActiveOpponent = false;
     }
 };
 
 let background = {
-    imgStart: "url(./assets/images/match1.jpg)",
+    imgStart: "url(./assets/images/starsWarsBG.jpg)",
     imgMatches: ["url(./assets/images/match1.jpg)", "url(./assets/images/match2.jpg)", "url(./assets/images/match3.jpg)"],
     imgHistory: [],
 
@@ -136,6 +152,31 @@ let background = {
 //Functions--------------------------------------------------------------------
 function initialize() {
 
+    bgImg = $("#bgImg");
+    bgImg.css("background-image", background.imgStart);
+
+    startBtn = $("#startLogoWrapper");
+    selectPlayerText = $("#selectPlayer");
+    selectOpponentText = $("#selectOpponent");
+    attackBtn = $("#attack");
+    opponentDefeated = $("#opponentDefeated");
+
+    startBtn.addClass("startLogoWrapper");
+    startBtn.removeClass("startLogoWrapperFade");
+    startBtn.show(0);
+    startBtn.off("click");
+    startBtn.click(startGame);
+
+    selectPlayerText.removeClass("hidden");
+    selectOpponentText.removeClass("hidden");
+    attackBtn.removeClass("hidden");
+    opponentDefeated.removeClass("hidden");
+
+    selectPlayerText.hide(0);
+    selectOpponentText.hide(0);
+    attackBtn.hide(0);
+    opponentDefeated.hide(0);
+
     yoda.element = $("#yodaWrapper");
     leia.element = $("#leiaWrapper");
     vader.element = $("#vaderWrapper");
@@ -147,17 +188,18 @@ function initialize() {
 
         player.initialize();
 
-        console.log(player);
+        player.element.removeAttr("style");
+
+        player.element.hide(0);
+
+        player.element.find("#player").text("");
     }
 
+    updateViewAllPlayers();
+
+    attackPowerGain = Math.floor(Math.random() * (12 - 6)) + 6;
+
     assignSelectListeners();
-
-    startBtn = $("#startLogoWrapper");
-    startBtn.click(startGame);
-
-    selectPlayerText = $("#selectPlayer");
-    selectOpponentText = $("#selectOpponent");
-    attackBtn = $("#attack");
 
     waitToStartGame();
 }
@@ -204,7 +246,7 @@ function startGame() {
 
         setTimeout(() => {
 
-            startBtn.attr("class", "hidden");
+            startBtn.hide(0);
 
             selectPlayer();
         }, 5000);
@@ -216,13 +258,15 @@ function startGame() {
 function selectPlayer() {
 
     let durationMS = 2000;
-    let delayMs = 0;
-
-    updateViewAllPlayers();
+    let delayMs = 333;
 
     for (let player of players) {
 
+        player.element.show(0);
+
         setTimeout(() => {
+
+            updateViewForPlayer(player);
 
             if (player === players[players.length - 1]) {
 
@@ -230,7 +274,7 @@ function selectPlayer() {
 
                     areSelectListenersActive = true;
 
-                    selectPlayerText.removeClass("hidden").hide(0).fadeIn(1000);
+                    selectPlayerText.fadeIn(1000);
                 });
             }
             else {
@@ -241,6 +285,8 @@ function selectPlayer() {
         }, delayMs);
 
         delayMs += 333;
+
+        player.element.off("click");
 
         player.element.click(() => {
 
@@ -261,13 +307,8 @@ function selectPlayer() {
 
                     selectPlayerText.hide(0);
 
-                    selectOpponentText.removeClass("hidden").hide(0).fadeIn(1000).promise().done(() => {
-
-                        areSelectListenersActive = true;
-                    });
+                    selectOpponent();
                 });
-
-                selectOpponent();
             }
         });
     }
@@ -276,9 +317,42 @@ function selectPlayer() {
 
 function selectOpponent() {
 
+    setTimeout(() => {
+
+        selectOpponentText.fadeIn(1000).promise().done(() => {
+
+            areSelectListenersActive = true;
+        });
+    }, 3000);
+
     for (let opponent of players) {
 
         opponent.element.off("click");
+
+        if (!opponent.isDefeated && !opponent.isHumanPlayer) {
+
+            opponent.element.fadeOut(1000).promise().done(() => {
+
+                opponent.element.css("top", "-50%");
+
+                opponent.element.show(0);
+
+                updateViewForPlayer(opponent);
+
+                setTimeout(() => {
+
+                    opponent.element.animate({ top: '50%' }, 2000).promise().done(() => {
+
+
+                    });
+                });
+            });
+        }
+
+        if (opponent.isHumanPlayer || opponent.isDefeated) {
+
+            opponent.element.fadeOut(1000);
+        }
 
         opponent.element.click(() => {
 
@@ -369,24 +443,114 @@ function startMatch() {
 
     let durationMS = 2000;
 
-    $("#bgImg").css("background-image", background.getNewImg());
+    bgImg.css("background-image", background.getNewImg());
 
-    attackBtn.removeClass("hidden").hide(0).fadeIn(durationMS).promise().done(() => {
+    setTimeout(() => {
 
-        attackBtn.click(() => {
-            alert("attacked");
+        attackBtn.fadeIn(durationMS).promise().done(() => {
+
+            attackBtn.off("click");
+
+            attackBtn.click(() => {
+    
+                if (!humanPlayer.isDefeated && !activeOpponent.isDefeated) {
+    
+                    attack();
+                }
+            });
         });
-    });
+    }, 2000);
 
-    humanPlayer.element.animate({ top: '50%' }, durationMS).promise().done(() => {
+    humanPlayer.element.animate({ top: '50%' }, durationMS);
 
-       
-    });
+    activeOpponent.element.animate({ top: '50%' }, durationMS);
+}
 
-    activeOpponent.element.animate({ top: '50%' }, durationMS).promise().done(() => {
 
-       
-    });
+function attack() {
+
+    humanPlayer.healthPoints -= activeOpponent.attackPower;
+
+    activeOpponent.healthPoints -= humanPlayer.attackPower;
+
+    humanPlayer.attackPower += attackPowerGain;
+
+    if (humanPlayer.healthPoints <= 0) {
+
+        humanPlayer.healthPoints = 0;
+
+        humanPlayer.isDefeated = true;
+    }
+
+    if (activeOpponent.healthPoints <= 0) {
+
+        activeOpponent.healthPoints = 0;
+
+        activeOpponent.isDefeated = true;
+    }
+
+    updateViewForPlayer(humanPlayer);
+
+    updateViewForPlayer(activeOpponent);
+
+    if (humanPlayer.isDefeated) {
+
+        setTimeout(() => {
+
+            let confirmed = confirm("You Lose...  Click OK to restart game.");
+
+            if (confirmed) {
+
+                initialize();
+            }
+
+        }, 1000);
+    }
+    else if (activeOpponent.isDefeated) {
+
+        activeOpponent.isActiveOpponent = false;
+
+        attackBtn.fadeOut(1000).promise().done(() => {
+
+            attackBtn.hide(0);
+
+            opponentDefeated.fadeIn(1000).promise().done(() => {
+
+                setTimeout(() => {
+
+                    opponentDefeated.fadeOut(1000).promise().done(() => { 
+
+                        opponentDefeated.hide(0); 
+                    
+                        let hasWon = true;
+
+                        for (let player of players) {
+
+                            if (!player.isHumanPlayer  &&  !player.isDefeated) {
+
+                                hasWon = false;
+                            }
+                        }
+
+                        if (hasWon) {
+
+                            let confirmed = confirm("You WIN!!!  Click OK to restart game.");
+
+                            if (confirmed) {
+                
+                                initialize();
+                            }
+                        }
+                        else {
+
+                            selectOpponent();
+                        }
+                    });
+
+                }, 2000);
+            });
+        });
+    }
 }
 
 
@@ -401,13 +565,21 @@ function updateViewAllPlayers() {
 
 function updateViewForPlayer(player) {
 
-    player.element.removeClass("hidden playerSelect playerBlur");
+    player.element.removeClass("playerSelect playerBlur");
 
     player.element.addClass("playerBorder");
 
     setPlayerIMGOrientation(player);
 
     player.element.find("#name").text(player.name);
+
+    player.element.find(player.imgElement).attr("src", player.usedIMG);
+
+    player.element.find(player.imgElement).attr("alt", player.name);
+
+    player.element.find("#hp").html("Health Points: &nbsp;" + player.healthPoints);
+
+    player.element.find("#ap").html("Attack Power: &nbsp;" + player.attackPower);
 
     if (player.isHumanPlayer) {
 
@@ -417,12 +589,6 @@ function updateViewForPlayer(player) {
 
         player.element.find("#player").text("(Opponent)");
     }
-
-    player.element.find(player.imgElement).attr("src", player.usedIMG);
-
-    player.element.find(player.imgElement).attr("alt", player.name);
-
-    player.element.find("#hp").text("HP: " + player.healthPoints);
 }
 
 
@@ -445,6 +611,8 @@ function assignSelectListeners() {
 
     for (let player of players) {
 
+        player.element.off("mousemove");
+
         player.element.mousemove(() => {
 
             if (areSelectListenersActive) {
@@ -462,6 +630,8 @@ function assignSelectListeners() {
                 }
             }
         });
+
+        player.element.off("mouseleave");
 
         player.element.mouseleave(() => {
 

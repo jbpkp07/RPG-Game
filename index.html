@@ -5,7 +5,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Star Wars RPG v1.1</title>
+    <title>Star Wars RPG v1.2</title>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -18,7 +18,7 @@
 <body>
 
     <div id="bgImg">
-        <div id="startLogoWrapper" class="startLogoWrapper">
+        <div id="startLogoWrapper">
             <img id="startLogoImg" src="./assets/images/starWarsLogo.png" alt="Star Wars Logo">
             <div id="clickToStartTxt">Click To Start</div>
         </div>
@@ -30,40 +30,39 @@
 
     <div id="attack" class="playerBorder hidden">Click To Attack</div>
 
-    <div id="yodaWrapper" class="hidden playerBorder">
+    <div id="opponentDefeated" class="playerBorder hidden">Opponent Defeated</div>
+
+    <div id="yodaWrapper" class="playerBorder">
         <div id="name"></div>
         <div id="player"></div>
         <img id="yodaIMG">
         <div id="hp"></div>
+        <div id="ap"></div>
     </div>
 
-    <div id="leiaWrapper" class="hidden playerBorder">
+    <div id="leiaWrapper" class="playerBorder">
         <div id="name"></div>
         <div id="player"></div>
         <img id="leiaIMG">
         <div id="hp"></div>
+        <div id="ap"></div>
     </div>
 
-    <div id="vaderWrapper" class="hidden playerBorder">
+    <div id="vaderWrapper" class="playerBorder">
         <div id="name"></div>
         <div id="player"></div>
         <img id="vaderIMG">
         <div id="hp"></div>
+        <div id="ap"></div>
     </div>
 
-    <div id="lukeWrapper" class="hidden playerBorder">
+    <div id="lukeWrapper" class="playerBorder">
         <div id="name"></div>
         <div id="player"></div>
         <img id="lukeIMG">
         <div id="hp"></div>
+        <div id="ap"></div>
     </div>
-
-
-
-
-
-
-
 
     <script src="./assets//javascript/Game.js"></script>
 
