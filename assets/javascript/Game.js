@@ -30,8 +30,8 @@ let areSelectListenersActive = false;
 let yoda = {
     name: "Yoda",
     element: null,
-    healthPoints: 100,
-    attackPower: 8,
+    healthPoints: null,
+    attackPower: null,
     isDefeated: false,
     isHumanPlayer: false,
     isActiveOpponent: false,
@@ -40,51 +40,71 @@ let yoda = {
     imgRight: "./assets/images/yoda-right.png",
     imgUsed: "./assets/images/yoda-left.png",
 
-    // reset: function() {
+    initialize: function() {
 
-    // }
+        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100; 
+        this.attackPower  = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+    }
 };
 
 let leia = {
     name: "Leia",
     element: null,
-    healthPoints: 120,
-    attackPower: 5,
+    healthPoints: null,
+    attackPower: null,
     isDefeated: false,
     isHumanPlayer: false,
     isActiveOpponent: false,
     imgElement: "#leiaIMG",
     imgLeft: "./assets/images/leia-left.png",
     imgRight: "./assets/images/leia-right.png",
-    imgUsed: "./assets/images/leia-left.png"
+    imgUsed: "./assets/images/leia-left.png",
+
+    initialize: function() {
+
+        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100; 
+        this.attackPower  = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+    }
 };
 
 let vader = {
     name: "Vader",
     element: null,
-    healthPoints: 150,
-    attackPower: 20,
+    healthPoints: null,
+    attackPower: null,
     isDefeated: false,
     isHumanPlayer: false,
     isActiveOpponent: false,
     imgElement: "#vaderIMG",
     imgLeft: "./assets/images/vader-left.png",
     imgRight: "./assets/images/vader-right.png",
-    imgUsed: "./assets/images/vader-left.png"
+    imgUsed: "./assets/images/vader-left.png",
+
+    initialize: function() {
+
+        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100; 
+        this.attackPower  = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+    }
 };
 
 let luke = {
     name: "Luke",
     element: null,
-    healthPoints: 180,
-    attackPower: 25,
+    healthPoints: null,
+    attackPower: null,
     isDefeated: false,
     isHumanPlayer: false,
     isActiveOpponent: false,
     imgElement: "#lukeIMG",
     imgLeft: "./assets/images/luke-left.png",
     imgRight: "./assets/images/luke-right.png",
-    imgUsed: "./assets/images/luke-left.png"
+    imgUsed: "./assets/images/luke-left.png",
+
+    initialize: function() {
+
+        this.healthPoints = Math.floor(Math.random() * (180 - 100)) + 100; 
+        this.attackPower  = Math.ceil((1 - ((this.healthPoints - 100) / 80)) * 20 + 5);
+    }
 };
 
 let background = {
@@ -122,6 +142,13 @@ function initialize() {
     luke.element = $("#lukeWrapper");
 
     players = [yoda, leia, vader, luke];
+
+    for (let player of players) {
+
+        player.initialize();
+
+        console.log(player);
+    }
 
     assignSelectListeners();
 
@@ -344,7 +371,12 @@ function startMatch() {
 
     $("#bgImg").css("background-image", background.getNewImg());
 
-    attackBtn.removeClass("hidden").hide(0).fadeIn(2000);
+    attackBtn.removeClass("hidden").hide(0).fadeIn(durationMS).promise().done(() => {
+
+        attackBtn.click(() => {
+            alert("attacked");
+        });
+    });
 
     humanPlayer.element.animate({ top: '50%' }, durationMS).promise().done(() => {
 
@@ -382,7 +414,7 @@ function updateViewForPlayer(player) {
         player.element.find("#player").text("(Player)");
     }
     else if (player.isActiveOpponent) {
-        
+
         player.element.find("#player").text("(Opponent)");
     }
 
@@ -397,8 +429,7 @@ function updateViewForPlayer(player) {
 function setPlayerIMGOrientation(player) {
 
     let middleScreen = $(window).width() / 2;
-    console.log(player.name);
-    console.log(player.element.offset());
+
     if (player.element.offset().left < middleScreen) {
 
         player.usedIMG = player.imgLeft;
