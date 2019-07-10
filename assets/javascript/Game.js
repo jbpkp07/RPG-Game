@@ -341,10 +341,7 @@ function selectOpponent() {
 
                 setTimeout(() => {
 
-                    opponent.element.animate({ top: '50%' }, 2000).promise().done(() => {
-
-
-                    });
+                    opponent.element.animate({ top: '50%' }, 2000);
                 });
             });
         }
@@ -495,6 +492,11 @@ function attack() {
 
     if (humanPlayer.isDefeated) {
 
+        attackBtn.fadeOut(1000).promise().done(() => {
+
+            attackBtn.hide(0);
+        });
+
         setTimeout(() => {
 
             let confirmed = confirm("You Lose...  Click OK to restart game.");
@@ -504,7 +506,7 @@ function attack() {
                 initialize();
             }
 
-        }, 1000);
+        }, 2000);
     }
     else if (activeOpponent.isDefeated) {
 
